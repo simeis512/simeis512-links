@@ -3,36 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>コトン - リンク集</title>
-    <meta name="description" content="マルチスタックエンジニアクリエイター コトンのリンク集です。">
+    <title>コトンのリンク</title>
+    <meta name="description" content="コトンのリンク集">
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Noto+Sans+JP:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Noto+Sans+JP:wght@300;500&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <header class="profile">
-            <img src="https://prd.resource-api.lit.link/images/creators/dfdceee8-e194-4fa0-8412-441bca89ca78/03be51ab-7a2d-453d-8c61-76dc9284ed2c.jpg" alt="コトンのアイコン" class="profile-icon">
-            <h1 class="profile-name">コトン</h1>
-            <p class="profile-title">マルチスタックエンジニアクリエイター</p>
-        </header>
+    <canvas id="grid-canvas"></canvas>
 
-        <main>
-            <section class="link-section">
-                <h2 class="section-heading">あらゆるものを作りたい</h2>
-                <ul class="link-list">
-                    <li><a href="https://twitter.com/simeis512" target="_blank" rel="noopener noreferrer" class="link-button">X (旧Twitter)</a></li>
-                    <li><a href="https://vrchat.com/home/user/usr_14ca2167-39c5-4a22-a983-d00351c04570" target="_blank" rel="noopener noreferrer" class="link-button">VRChat</a></li>
-                    <li><a href="https://note.com/simeis512" target="_blank" rel="noopener noreferrer" class="link-button">note</a></li>
-                    <li><a href="https://github.com/simeis512" target="_blank" rel="noopener noreferrer" class="link-button">GitHub</a></li>
-                    <li><a href="https://soundcloud.com/simeis" target="_blank" rel="noopener noreferrer" class="link-button">SoundCloud</a></li>
-                    <li><a href="https://www.youtube.com/@simeis512" target="_blank" rel="noopener noreferrer" class="link-button">YouTube</a></li>
-                    <li><a href="https://simeis512.booth.pm/" target="_blank" rel="noopener noreferrer" class="link-button">Booth</a></li>
-                    <li><a href="https://hub.vroid.com/users/668060" target="_blank" rel="noopener noreferrer" class="link-button">VRoid Hub</a></li>
-                </ul>
-            </section>
-        </main>
+    <div class="container">
+        <h1 class="site-title">コトンのリンク</h1>
+
+        <nav>
+            <ul class="link-list" id="link-list">
+                <li style="--i:0"><a href="https://twitter.com/simeis512" target="_blank" rel="noopener noreferrer" class="link-button" id="link-x"><span class="link-label">X (旧Twitter)</span><span class="link-arrow">→</span></a></li>
+                <li style="--i:1"><a href="https://vrchat.com/home/user/usr_14ca2167-39c5-4a22-a983-d00351c04570" target="_blank" rel="noopener noreferrer" class="link-button" id="link-vrchat"><span class="link-label">VRChat</span><span class="link-arrow">→</span></a></li>
+                <li style="--i:2"><a href="https://note.com/simeis512" target="_blank" rel="noopener noreferrer" class="link-button" id="link-note"><span class="link-label">note</span><span class="link-arrow">→</span></a></li>
+                <li style="--i:3"><a href="https://github.com/simeis512" target="_blank" rel="noopener noreferrer" class="link-button" id="link-github"><span class="link-label">GitHub</span><span class="link-arrow">→</span></a></li>
+                <li style="--i:4"><a href="https://soundcloud.com/simeis" target="_blank" rel="noopener noreferrer" class="link-button" id="link-soundcloud"><span class="link-label">SoundCloud</span><span class="link-arrow">→</span></a></li>
+                <li style="--i:5"><a href="https://www.youtube.com/@simeis512" target="_blank" rel="noopener noreferrer" class="link-button" id="link-youtube"><span class="link-label">YouTube</span><span class="link-arrow">→</span></a></li>
+                <li style="--i:6"><a href="https://simeis512.booth.pm/" target="_blank" rel="noopener noreferrer" class="link-button" id="link-booth"><span class="link-label">Booth</span><span class="link-arrow">→</span></a></li>
+                <li style="--i:7"><a href="https://hub.vroid.com/users/668060" target="_blank" rel="noopener noreferrer" class="link-button" id="link-vroidhub"><span class="link-label">VRoid Hub</span><span class="link-arrow">→</span></a></li>
+            </ul>
+        </nav>
     </div>
+
+    <script>
+    /* 背景グリッドアニメーション */
+    (() => {
+        const canvas = document.getElementById('grid-canvas');
+        const ctx = canvas.getContext('2d');
+        let w, h, cols, rows;
+        const CELL = 40;
+
+        function resize() {
+            w = canvas.width = window.innerWidth;
+            h = canvas.height = window.innerHeight;
+            cols = Math.ceil(w / CELL) + 1;
+            rows = Math.ceil(h / CELL) + 1;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        let time = 0;
+        function draw() {
+            time += 0.003;
+            ctx.clearRect(0, 0, w, h);
+
+            for (let x = 0; x < cols; x++) {
+                for (let y = 0; y < rows; y++) {
+                    const px = x * CELL;
+                    const py = y * CELL;
+                    /* ゆらぎで点の明るさを変化 */
+                    const n = Math.sin(x * 0.3 + time) * Math.cos(y * 0.3 + time * 0.7);
+                    const alpha = 0.04 + Math.max(0, n) * 0.10;
+                    ctx.fillStyle = `rgba(0, 255, 200, ${alpha})`;
+                    ctx.fillRect(px, py, 1.2, 1.2);
+                }
+            }
+
+            /* 縦横のグリッド線 */
+            ctx.strokeStyle = 'rgba(0, 255, 200, 0.03)';
+            ctx.lineWidth = 0.5;
+            for (let x = 0; x < cols; x++) {
+                ctx.beginPath();
+                ctx.moveTo(x * CELL, 0);
+                ctx.lineTo(x * CELL, h);
+                ctx.stroke();
+            }
+            for (let y = 0; y < rows; y++) {
+                ctx.beginPath();
+                ctx.moveTo(0, y * CELL);
+                ctx.lineTo(w, y * CELL);
+                ctx.stroke();
+            }
+
+            requestAnimationFrame(draw);
+        }
+        draw();
+    })();
+    </script>
 </body>
 </html>
